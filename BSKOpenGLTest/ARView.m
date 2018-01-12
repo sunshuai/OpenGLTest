@@ -237,8 +237,13 @@ void ecefToEnu(double lat, double lon, double x, double y, double z, double xr, 
 	[locationManager release];
 	locationManager = [[CLLocationManager alloc] init];
 	locationManager.delegate = self;
+    locationManager.distanceFilter = kCLDistanceFilterNone;
+    locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;
+    
 	locationManager.distanceFilter = 100.0;
+    [locationManager requestWhenInUseAuthorization];
 	[locationManager startUpdatingLocation];
+    
 }
 
 - (void)stopLocation
@@ -426,6 +431,20 @@ void ecefToEnu(double lat, double lon, double x, double y, double z, double xr, 
 //	if (placesOfInterest != nil) {
 //		[self updatePlacesOfInterestCoordinates];
 //	}	
+}
+
+- (void)locationManager:(CLLocationManager *)manager
+     didUpdateLocations:(NSArray<CLLocation *> *)locations
+{
+    CLLocation *newLocation = [locations firstObject];
+    [location release];
+    location = [newLocation retain];
+    
+    
+//    NSNumber *lati = [NSNumber numberWithDouble:(double)newLocation.coordinate.latitude];
+//    NSNumber *longi = [NSNumber numberWithDouble:(double)newLocation.coordinate.longitude];
+    
+    [self stopLocation];
 }
 
 - (id)initWithFrame:(CGRect)frame
